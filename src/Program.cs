@@ -102,8 +102,9 @@ namespace WSLServiceAgent
             menu.Items.Add(new ToolStripMenuItem("WSL Service Agent") { Enabled = false, Font = new Font(menu.Font, FontStyle.Bold) });
             menu.Items.Add(new ToolStripSeparator());
 
-            // Add distribution items
-            foreach (var distro in _distributions)
+            // Add distribution items - only show enabled distros from config
+            var enabledDistros = _distributions.Where(d => _config.EnabledDistros.Contains(d.Name)).ToList();
+            foreach (var distro in enabledDistros)
             {
                 bool isRunning = _runningProcesses.ContainsKey(distro.Name);
                 var item = new ToolStripMenuItem(distro.Name);
@@ -133,7 +134,7 @@ namespace WSLServiceAgent
                 menu.Items.Add(item);
             }
 
-            if (_distributions.Count > 0)
+            if (enabledDistros.Count > 0)
             {
                 menu.Items.Add(new ToolStripSeparator());
 
@@ -153,6 +154,10 @@ namespace WSLServiceAgent
             }
 
             menu.Items.Add(new ToolStripSeparator());
+            var editConfigItem = new ToolStripMenuItem("Edit Config");
+            editConfigItem.Click += (s, e) => EditConfig();
+            menu.Items.Add(editConfigItem);
+
             var exitItem = new ToolStripMenuItem("Exit")
             {
                 Image = Assets.ExitBitmap
@@ -443,6 +448,24 @@ namespace WSLServiceAgent
             {
                 _trayIcon?.ShowBalloonTip(3000, title, text, icon);
             }, null);
+        }
+
+        static void EditConfig()
+        {
+            try
+            {
+                var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "notepad.exe",
+                    Arguments = $"\"{configPath}\"",
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening config: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         static void Cleanup()
