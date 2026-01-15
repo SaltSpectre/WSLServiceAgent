@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>WSLServiceAgent</AssemblyName>
+    <RootNamespace>WSLServiceAgent</RootNamespace>
+    <Version>2.0.0</Version>
+    <Authors>SaltSpectre</Authors>
+    <Copyright>Copyright © 2026 SaltSpectre</Copyright>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\*.ico" />
+    <EmbeddedResource Include="Resources\*.png" />
+  </ItemGroup>
+
+</Project>
