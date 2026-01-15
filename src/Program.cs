@@ -372,8 +372,8 @@ namespace WSLServiceAgent
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = "wsl",
-                        Arguments = $"-d \"{distro.Name}\"",
+                        FileName = "wt",
+                        Arguments = $"wsl -d {distro.Name}",
                         UseShellExecute = true
                     });
                 }
