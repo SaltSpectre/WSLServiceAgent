@@ -26,6 +26,7 @@
              AllowAdvertise="no"
              Description="The main WSL Service Agent application (required).">
       <ComponentGroupRef Id="PublishedFiles" />
+      <ComponentRef Id="ConfigFileComponent" />
       <ComponentRef Id="ApplicationShortcutComponent" />
       
       <Feature Id="AutoStartFeature" 
@@ -115,6 +116,17 @@
                        Type="string"
                        Value="&quot;[INSTALLFOLDER]wslserviceagent.exe&quot;"
                        KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="ConfigFileComponent" Guid="E7F8A9B0-1C2D-3E4F-5A6B-7C8D9E0F1A2B">
+        <File Id="ConfigFile" 
+              Source="../src/config.json" 
+              KeyPath="yes" 
+              NeverOverwrite="yes" />
       </Component>
     </DirectoryRef>
   </Fragment>
