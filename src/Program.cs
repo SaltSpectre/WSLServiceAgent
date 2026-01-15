@@ -73,20 +73,18 @@ namespace WSLServiceAgent
                 return;
             }
 
-            _distributions = await DiscoverDistributionsAsync();
+            _distributions = await DiscoverDistributionsAsync(_config.EnabledDistros);
 
             if (_distributions.Count == 0)
             {
                 _uiContext?.Post(_ =>
-                    MessageBox.Show("No WSL distributions found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning),
+                    MessageBox.Show("No enabled WSL distributions found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning),
                     null);
                 return;
             }
 
-            // Start only configured distributions
-            var toStart = _distributions.Where(d => _config.EnabledDistros.Contains(d.Name)).ToList();
-
-            foreach (var distro in toStart)
+            // Start all configured distributions
+            foreach (var distro in _distributions)
             {
                 await StartDistroAsync(distro);
             }
@@ -102,9 +100,8 @@ namespace WSLServiceAgent
             menu.Items.Add(new ToolStripMenuItem("WSL Service Agent") { Enabled = false, Font = new Font(menu.Font, FontStyle.Bold) });
             menu.Items.Add(new ToolStripSeparator());
 
-            // Add distribution items - only show enabled distros from config
-            var enabledDistros = _distributions.Where(d => _config.EnabledDistros.Contains(d.Name)).ToList();
-            foreach (var distro in enabledDistros)
+            // Add distribution items
+            foreach (var distro in _distributions)
             {
                 bool isRunning = _runningProcesses.ContainsKey(distro.Name);
                 var item = new ToolStripMenuItem(distro.Name);
@@ -134,7 +131,7 @@ namespace WSLServiceAgent
                 menu.Items.Add(item);
             }
 
-            if (enabledDistros.Count > 0)
+            if (_distributions.Count > 0)
             {
                 menu.Items.Add(new ToolStripSeparator());
 
@@ -168,7 +165,7 @@ namespace WSLServiceAgent
             return menu;
         }
 
-        static async Task<List<WslDistro>> DiscoverDistributionsAsync()
+        static async Task<List<WslDistro>> DiscoverDistributionsAsync(List<string> enabledDistroNames)
         {
             var distros = new List<WslDistro>();
 
@@ -187,6 +184,9 @@ namespace WSLServiceAgent
 
                     var name = distroKey.GetValue("DistributionName") as string;
                     if (string.IsNullOrEmpty(name)) continue;
+
+                    // Only add if this distro is in the enabled list
+                    if (!enabledDistroNames.Contains(name)) continue;
 
                     distros.Add(new WslDistro
                     {
@@ -383,7 +383,7 @@ namespace WSLServiceAgent
 
         static void LaunchDefaultDistro()
         {
-            var defaultDistro = _distributions.FirstOrDefault(d => _config.EnabledDistros.Contains(d.Name));
+            var defaultDistro = _distributions.FirstOrDefault();
             if (defaultDistro != null) LaunchTerminal(defaultDistro);
         }
 

@@ -122,11 +122,10 @@
 
   <Fragment>
     <DirectoryRef Id="INSTALLFOLDER">
-      <Component Id="ConfigFileComponent" Guid="E7F8A9B0-1C2D-3E4F-5A6B-7C8D9E0F1A2B">
+      <Component Id="ConfigFileComponent" Guid="E7F8A9B0-1C2D-3E4F-5A6B-7C8D9E0F1A2B" NeverOverwrite="yes">
         <File Id="ConfigFile" 
               Source="../src/config.json" 
-              KeyPath="yes" 
-              NeverOverwrite="yes" />
+              KeyPath="yes" />
       </Component>
     </DirectoryRef>
   </Fragment>
