@@ -93,7 +93,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ needs.generate-version.outputs.tag }}
-        name: "Release ${{ needs.generate-version.outputs.version }}"
+        name: "WSL Service Agent ${{ needs.generate-version.outputs.version }}"
         body: |
           🐧 **WSL Service Agent ${{ needs.generate-version.outputs.version }}**
           
@@ -113,3 +113,4 @@ jobs:
         draft: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
