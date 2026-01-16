@@ -21,4 +21,10 @@
     <EmbeddedResource Include="Resources\*.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="config.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

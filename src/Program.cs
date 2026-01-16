@@ -73,20 +73,18 @@ namespace WSLServiceAgent
                 return;
             }
 
-            _distributions = await DiscoverDistributionsAsync();
+            _distributions = await DiscoverDistributionsAsync(_config.EnabledDistros);
 
             if (_distributions.Count == 0)
             {
                 _uiContext?.Post(_ =>
-                    MessageBox.Show("No WSL distributions found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning),
+                    MessageBox.Show("No enabled WSL distributions found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning),
                     null);
                 return;
             }
 
-            // Start only configured distributions
-            var toStart = _distributions.Where(d => _config.EnabledDistros.Contains(d.Name)).ToList();
-
-            foreach (var distro in toStart)
+            // Start all configured distributions
+            foreach (var distro in _distributions)
             {
                 await StartDistroAsync(distro);
             }
@@ -153,6 +151,10 @@ namespace WSLServiceAgent
             }
 
             menu.Items.Add(new ToolStripSeparator());
+            var editConfigItem = new ToolStripMenuItem("Edit Config");
+            editConfigItem.Click += (s, e) => EditConfig();
+            menu.Items.Add(editConfigItem);
+
             var exitItem = new ToolStripMenuItem("Exit")
             {
                 Image = Assets.ExitBitmap
@@ -163,7 +165,7 @@ namespace WSLServiceAgent
             return menu;
         }
 
-        static async Task<List<WslDistro>> DiscoverDistributionsAsync()
+        static async Task<List<WslDistro>> DiscoverDistributionsAsync(List<string> enabledDistroNames)
         {
             var distros = new List<WslDistro>();
 
@@ -182,6 +184,9 @@ namespace WSLServiceAgent
 
                     var name = distroKey.GetValue("DistributionName") as string;
                     if (string.IsNullOrEmpty(name)) continue;
+
+                    // Only add if this distro is in the enabled list
+                    if (!enabledDistroNames.Contains(name)) continue;
 
                     distros.Add(new WslDistro
                     {
@@ -367,8 +372,8 @@ namespace WSLServiceAgent
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = "wsl",
-                        Arguments = $"-d \"{distro.Name}\"",
+                        FileName = "wt",
+                        Arguments = $"wsl -d {distro.Name}",
                         UseShellExecute = true
                     });
                 }
@@ -378,7 +383,7 @@ namespace WSLServiceAgent
 
         static void LaunchDefaultDistro()
         {
-            var defaultDistro = _distributions.FirstOrDefault(d => _config.EnabledDistros.Contains(d.Name));
+            var defaultDistro = _distributions.FirstOrDefault();
             if (defaultDistro != null) LaunchTerminal(defaultDistro);
         }
 
@@ -443,6 +448,24 @@ namespace WSLServiceAgent
             {
                 _trayIcon?.ShowBalloonTip(3000, title, text, icon);
             }, null);
+        }
+
+        static void EditConfig()
+        {
+            try
+            {
+                var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "notepad.exe",
+                    Arguments = $"\"{configPath}\"",
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening config: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         static void Cleanup()
