@@ -2,9 +2,7 @@ name: Build and Release
 
 on:
   push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
+
   workflow_dispatch:
 
 permissions:
@@ -81,7 +79,6 @@ jobs:
   create-release:
     needs: [generate-version, build-msi]
     runs-on: ubuntu-latest
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
 
     steps:
     - name: Download all artifacts
