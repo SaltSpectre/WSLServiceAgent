@@ -1,8 +1,6 @@
 # 🐧 WSL Service Agent 
 
-*Made with ❤️ by @SaltSpectre*
-
-### *WSL Service Agent - Keeping your WSL distributions alive, one sleep at a time* 🐧
+### *WSL Service Agent: Keeping your WSL distributions alive, one sleep at a time*
 
 ## Quick Start
 
@@ -45,7 +43,7 @@ The agent launches a hidden WSL session that executes an infinite sleep command,
 
 All settings are managed through the `config.json` file. 
 
-- **Enabled Distributions**: Enter the distribution names as used by WSL. If no config exists, the menu will not be populated. Update the configuration and restart the app.
+- **EnabledDistros**: Distributions that WSL Service Agent will keep alive. Enter the distribution names as used by WSL. If no config exists, the menu will not be populated. Update the configuration and restart the app.
 
 Sample config.json:
 ```json
