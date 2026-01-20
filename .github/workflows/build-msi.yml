@@ -88,19 +88,15 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ needs.generate-version.outputs.tag }}
-        name: "WSL Service Agent ${{ needs.generate-version.outputs.version }}"
+        name: "🐧 WSL Service Agent ${{ needs.generate-version.outputs.version }}"
         body: |
-          🐧 **WSL Service Agent ${{ needs.generate-version.outputs.version }}**
+          *Automated release built from commit ${{ github.sha }}*
           
-          Keeping your WSL distributions alive, one sleep at a time
-          
-          Automated release built from commit ${{ github.sha }}
-          
-          **Downloads:**
+          ## Downloads:
           - `WSLServiceAgent-x64-${{ needs.generate-version.outputs.version }}.msi` - **x64 MSI Installer** (Intel/AMD 64-bit)
-          - `WSLServiceAgent-arm64-${{ needs.generate-version.outputs.version }}.msi` - **ARM64 MSI Installer** (Windows on ARM)
+          - `WSLServiceAgent-arm64-${{ needs.generate-version.outputs.version }}.msi` - **ARM64 MSI Installer** (Windows on ARM64 devices and Apple silicon)
           
-          **Installation:**
+          ## Installation:
           Run the MSI for your architecture. The installer is per-user and does not require administrator privileges.
           
         files: artifacts/**/*
